@@ -204,11 +204,7 @@ Content-Type: application/json
 
 ## 编译
 
-```
-build.bat    （Qt 5.5.1 + MSVC2013 32位，与项目现有环境一致）
-```
-
-依赖：`qsqlmysql.dll`（MySQL Qt 驱动）+ `libmysql.dll`（MySQL C Connector）
+使用 **Visual Studio** 打开根目录 `CourseSync.sln`，选择 **Win32** 与 **Debug / Release** 后生成即可。工程为 **MFC**，通过仓库内 `lib\mysql`（MariaDB C 客户端头文件与 `libmariadb.lib` / `libmariadb.dll`）连接 MySQL。
 
 ---
 

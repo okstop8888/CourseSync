@@ -1,0 +1,133 @@
+// CourseSync resource script (UTF-8)
+#include <afxres.h>
+#include "resource.h"
+
+LANGUAGE 0x0804, 0x01
+#pragma code_page(65001)
+
+// ============================================================
+// Tab1: Source Database
+// Two-step: enter credentials → Test Connection → pick DB → pick Table
+// ============================================================
+IDD_PAGE_SRC DIALOGEX 0, 0, 380, 265
+STYLE DS_SETFONT | WS_CHILD | WS_CLIPSIBLINGS | DS_CONTROL
+CAPTION "Source DB"
+FONT 9, "Segoe UI", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Source Database Connection", IDC_STATIC, 4, 2, 372, 132
+    LTEXT           "Host:",         IDC_STATIC,    12, 16, 36,  9
+    EDITTEXT        IDC_EDIT_SRC_HOST,              52, 14,120, 14, ES_AUTOHSCROLL
+    LTEXT           "Port:",         IDC_STATIC,   185, 16, 28,  9
+    EDITTEXT        IDC_EDIT_SRC_PORT,             215, 14, 50, 14, ES_AUTOHSCROLL
+    LTEXT           "Username:",     IDC_STATIC,    12, 34, 44,  9
+    EDITTEXT        IDC_EDIT_SRC_USER,              60, 32,120, 14, ES_AUTOHSCROLL
+    LTEXT           "Password:",     IDC_STATIC,    12, 52, 44,  9
+    EDITTEXT        IDC_EDIT_SRC_PASS,              60, 50,120, 14, ES_AUTOHSCROLL|ES_PASSWORD
+    PUSHBUTTON      "Test Connection", IDC_BTN_TEST_SRC, 12, 70, 80, 14
+    LTEXT           "",              IDC_STATIC_SRC_STATUS, 100, 72, 268,  9
+    LTEXT           "Database:",     IDC_STATIC,    12, 90, 44,  9
+    COMBOBOX        IDC_COMBO_SRC_DB,               60, 88,200, 80, CBS_DROPDOWNLIST|WS_VSCROLL
+    LTEXT           "Table:",        IDC_STATIC,    12,108, 36,  9
+    COMBOBOX        IDC_COMBO_SRC_TABLE,            52,106,200, 80, CBS_DROPDOWNLIST|WS_VSCROLL
+    PUSHBUTTON      "Refresh",       IDC_BTN_REFRESH_TABLE, 258,106, 44, 14
+
+    GROUPBOX        "Column Preview  (source columns & their mapping)", IDC_STATIC, 4,138, 372,122
+    CONTROL         "",              IDC_LIST_COL_PREVIEW,
+                    "SysListView32", LVS_REPORT|LVS_SINGLESEL|WS_BORDER|WS_VSCROLL|WS_TABSTOP,
+                    10,150, 360,104
+END
+
+// ============================================================
+// Tab2: PlusAPI — only enter server IP, rest is auto-assembled
+// URL = http://<ip>:7080/plusapi  endpoint = /api/external/courseSyncPush
+// ============================================================
+IDD_PAGE_DST DIALOGEX 0, 0, 380, 265
+STYLE DS_SETFONT | WS_CHILD | WS_CLIPSIBLINGS | DS_CONTROL
+CAPTION "PlusAPI"
+FONT 9, "Segoe UI", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "PlusAPI Push Configuration", IDC_STATIC, 4, 2, 372, 258
+    LTEXT           "Server IP:",    IDC_STATIC,    12, 18, 52,  9
+    EDITTEXT        IDC_EDIT_PLUS_IP,               68, 16,200, 14, ES_AUTOHSCROLL
+    LTEXT           "API Token:",    IDC_STATIC,    12, 36, 52,  9
+    EDITTEXT        IDC_EDIT_PLUS_TOKEN,            68, 34,300, 14, ES_AUTOHSCROLL|ES_PASSWORD
+    LTEXT           "Semester:",     IDC_STATIC,    12, 54, 52,  9
+    EDITTEXT        IDC_EDIT_PLUS_SEMESTER,         68, 52,150, 14, ES_AUTOHSCROLL
+    LTEXT           "Sem. Start:",   IDC_STATIC,   230, 54, 50,  9
+    CONTROL         "", IDC_EDIT_PLUS_SEMSTART, "SysDateTimePick32",
+                    0x00000000|WS_TABSTOP, 282, 52, 86, 14
+    CONTROL         "Full replace (clear semester first, then import all) — default: incremental upsert",
+                    IDC_CHK_PLUS_CLEAR, "Button", BS_AUTOCHECKBOX|WS_TABSTOP, 12, 72, 358, 10
+    CONTROL         "Enable this push target",
+                    IDC_CHK_PLUS_ENABLED, "Button", BS_AUTOCHECKBOX|WS_TABSTOP, 12, 86, 200, 10
+    PUSHBUTTON      "Test API",      IDC_BTN_TEST_PLUS,  12,102,  72, 14
+    LTEXT           "",              IDC_STATIC_PLUS_STATUS, 92,104, 276,  9
+
+    LTEXT           "Field reference (source → intermediate → PlusAPI JSON):", IDC_STATIC, 12,124, 340, 9
+    LTEXT           "course_name→courseName   teacher_name→teacherName   teacher_code→teacherCode",
+                    IDC_STATIC, 12,136, 356, 9
+    LTEXT           "dayinweek+start_section+end_section → schedule  (e.g. 周三 第1-2节)",
+                    IDC_STATIC, 12,148, 356, 9
+    LTEXT           "start_week+end_week+week_mode → weeks  (e.g. 1-15单)",
+                    IDC_STATIC, 12,160, 356, 9
+    LTEXT           "room_name→classroom   org_name→department   course_id→courseCode",
+                    IDC_STATIC, 12,172, 356, 9
+    LTEXT           "student_count→classStudents",
+                    IDC_STATIC, 12,184, 356, 9
+    LTEXT           "URL: http://<IP>:7080/plusapi/api/external/courseSyncPush",
+                    IDC_STATIC, 12,198, 356, 9
+END
+
+// ============================================================
+// Tab3: Field Mapping
+// ============================================================
+IDD_PAGE_MAP DIALOGEX 0, 0, 380, 265
+STYLE DS_SETFONT | WS_CHILD | WS_CLIPSIBLINGS | DS_CONTROL
+CAPTION "Field Mapping"
+FONT 9, "Segoe UI", 0, 0, 0x1
+BEGIN
+    LTEXT           "Map source columns to ct_course intermediate fields (auto-converted to PlusAPI JSON on push).",
+                    IDC_STATIC, 4, 2, 372, 16
+    CONTROL         "",              IDC_LIST_MAPPING,
+                    "SysListView32", LVS_REPORT|LVS_SINGLESEL|WS_BORDER|WS_VSCROLL|WS_TABSTOP,
+                    4, 20, 372, 200
+    PUSHBUTTON      "Reset Default", IDC_BTN_RESET_MAP,    4,228,  72, 14
+    PUSHBUTTON      "Preview",       IDC_BTN_PREVIEW_MAP,  82,228,  60, 14
+    PUSHBUTTON      "Add Row",       IDC_BTN_ADD_MAP,     148,228,  56, 14
+    PUSHBUTTON      "Delete Row",    IDC_BTN_DEL_MAP,     210,228,  64, 14
+END
+
+// ============================================================
+// Tab4: Sync & Schedule
+// ============================================================
+IDD_PAGE_SYNC DIALOGEX 0, 0, 380, 265
+STYLE DS_SETFONT | WS_CHILD | WS_CLIPSIBLINGS | DS_CONTROL
+CAPTION "Sync"
+FONT 9, "Segoe UI", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Sync Options",   IDC_STATIC,           4,  2, 260, 56
+    CONTROL         "Push to vDisk Control Center",
+                    IDC_CHK_PUSH_PLUS, "Button", BS_AUTOCHECKBOX|WS_TABSTOP, 12, 14,200, 10
+    CONTROL         "Skip on conflict (do not overwrite)",
+                    IDC_CHK_SKIP_CONFLICT,"Button",BS_AUTOCHECKBOX|WS_TABSTOP,12, 28,200, 10
+    CONTROL         "Match existing records by course_id",
+                    IDC_CHK_MATCH_BY_ID,"Button",BS_AUTOCHECKBOX|WS_TABSTOP, 12, 42,220, 10
+
+    GROUPBOX        "Auto-Sync Schedule", IDC_STATIC,       4, 62, 372, 40
+    CONTROL         "Enable auto sync",
+                    IDC_CHK_AUTO_SYNC, "Button", BS_AUTOCHECKBOX|WS_TABSTOP, 12, 74,100, 10
+    EDITTEXT        IDC_EDIT_SCHED_VALUE,                  120, 72, 40, 14, ES_AUTOHSCROLL|ES_NUMBER
+    COMBOBOX        IDC_COMBO_SCHED_UNIT,                  166, 72, 72, 60, CBS_DROPDOWNLIST|WS_VSCROLL
+    LTEXT           "Next:",          IDC_STATIC,           248, 74, 30,  9
+    LTEXT           "--",             IDC_STATIC_NEXT_SYNC, 280, 74, 80,  9
+
+    PUSHBUTTON      "Sync Now",       IDC_BTN_SYNC_NOW,       4,110, 72, 16
+    PUSHBUTTON      "Clear Log",      IDC_BTN_CLEAR_LOG,     82,110, 60, 16
+    LTEXT           "",               IDC_STATIC_SYNC_STATS, 150,114, 224,  9
+
+    CONTROL         "",               IDC_PROGRESS,
+                    "msctls_progress32", WS_BORDER, 4,130, 372, 12
+
+    EDITTEXT        IDC_EDIT_LOG, 4,146, 372,114,
+                    ES_MULTILINE|ES_READONLY|ES_AUTOVSCROLL|ES_WANTRETURN|WS_VSCROLL|WS_HSCROLL
+END
